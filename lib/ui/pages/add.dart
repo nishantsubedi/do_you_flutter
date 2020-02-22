@@ -1,8 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:iremember/blocs/app_state_provider.dart';
+import 'package:iremember/theme/theme_provider.dart';
+import 'package:iremember/widgets/loading_overlay.dart';
 
 //TODO allow user to pick image and display the preview in UI
 //TODO save new data to firestore (upload image to storage)
 class AddPage extends StatefulWidget {
+
+  static const String route = '/add';
+
   @override
   _AddPageState createState() => _AddPageState();
 }
@@ -13,7 +22,9 @@ class _AddPageState extends State<AddPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: LoadingOverlay.willPop,
+      child: Scaffold(
       appBar: AppBar(
         title: Text("Add item"),
         backgroundColor: Colors.blueAccent,
@@ -39,16 +50,13 @@ class _AddPageState extends State<AddPage> {
           _buildSaveButton(context)
         ],
       ),
-    );
+    ));
   }
 
   TextField _buildTitleField() {
+    var appState = AppStateProvider.of(context);
     return TextField(
-      onChanged: (value) {
-        setState(() {
-          title = value;
-        });
-      },
+      onChanged: appState.articleBloc.addTitle,
       decoration: InputDecoration(
           border: OutlineInputBorder(),
           hintText: "title",
@@ -57,12 +65,10 @@ class _AddPageState extends State<AddPage> {
   }
 
   TextField _buildDescriptionField() {
+    var appState = AppStateProvider.of(context);
+
     return TextField(
-      onChanged: (value) {
-        setState(() {
-          description = value;
-        });
-      },
+      onChanged: appState.articleBloc.addDescription,
       maxLines: 4,
       decoration: InputDecoration(
         border: OutlineInputBorder(),
@@ -71,28 +77,63 @@ class _AddPageState extends State<AddPage> {
     );
   }
 
-  SizedBox _buildImgSelectButton() {
+  Widget _buildImgSelectButton() {
+    var appState = AppStateProvider.of(context);
+    var themeData =ThemeProvider.of(context);
+
+    return ValueListenableBuilder(
+      valueListenable: appState.articleBloc.image, 
+      builder: (BuildContext context, File image, Widget child){
+        if(image!= null) return Container(
+          height: 150,
+          child: Image.file(image),
+        );
     return SizedBox(
       height: 50,
       width: double.infinity,
       child: RaisedButton.icon(
-        icon: Icon(Icons.camera),
-        label: Text("Add Image"),
-        color: Colors.blue,
-        onPressed: () {},
+        icon: Icon(Icons.camera,
+          color: themeData.primaryWhite,
+        ),
+        label: Text("Add Image",
+          style: TextStyle(
+            color: themeData.primaryWhite
+          ),
+        ),
+        color: themeData.primaryBlue,
+        onPressed: () async {
+          var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+          await appState.articleBloc.addImage(image);
+        },
       ),
     );
+    });
   }
 
   SizedBox _buildSaveButton(BuildContext context) {
+    var themeData =ThemeProvider.of(context);
     return SizedBox(
       height: 50,
       width: 20.0,
       child: RaisedButton.icon(
-        icon: Icon(Icons.save),
-        label: Text("Save"),
-        color: Colors.blue,
-        onPressed: () async {},
+        icon: Icon(Icons.save,
+          color: themeData.primaryWhite,
+        ),
+        label: Text("Save",
+         style: TextStyle(
+            color: themeData.primaryWhite
+          ),
+        ),
+        color: themeData.primaryBlue,
+        onPressed: () async {
+          final appSate = AppStateProvider.of(context);
+          LoadingOverlay.showLoadingOverlay(context);
+          var res = await appSate.articleBloc.submit();
+          LoadingOverlay.hideOverLay();
+          if(res){
+            Navigator.popUntil(context, (r) => r.settings.name == '/');
+          }
+        },
       ),
     );
   }
