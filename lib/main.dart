@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iremember/blocs/app_state_provider.dart';
 import 'package:iremember/theme/theme_provider.dart';
 import './ui/pages/home.dart';
+import 'ui/pages/add.dart';
 
 /* 
 Please complete the tasks listed in TODOs in different files
@@ -32,6 +33,7 @@ class IRememberApp extends StatelessWidget {
           theme: ThemeData(primaryColor: Colors.deepOrange),
           routes: {
             "/": (_) => HomePage(),
+            AddPage.route: (_) => AddPage()
           },
         )
       )

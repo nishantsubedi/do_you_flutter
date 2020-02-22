@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 //TODO allow user to pick image and display the preview in UI
 //TODO save new data to firestore (upload image to storage)
 class AddPage extends StatefulWidget {
+
+  static const String route = '/add'; 
   @override
   _AddPageState createState() => _AddPageState();
 }
