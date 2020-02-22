@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:iremember/blocs/app_state_provider.dart';
+import 'package:iremember/theme/theme_provider.dart';
 import './ui/pages/home.dart';
 
 /* 
@@ -22,13 +24,17 @@ void main() => runApp(IRememberApp());
 class IRememberApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'IRemember',
-      theme: ThemeData(primaryColor: Colors.deepOrange),
-      routes: {
-        "/": (_) => HomePage(),
-      },
+    return AppStateProvider(
+      child: ThemeProvider(
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Do you Flutterr',
+          theme: ThemeData(primaryColor: Colors.deepOrange),
+          routes: {
+            "/": (_) => HomePage(),
+          },
+        )
+      )
     );
   }
 }
