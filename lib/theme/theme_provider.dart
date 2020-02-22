@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class ThemeProvider extends InheritedWidget {
   final AppThemeData themeData;
@@ -16,4 +17,7 @@ class ThemeProvider extends InheritedWidget {
       context.dependOnInheritedWidgetOfExactType<ThemeProvider>()?.themeData;
 }
 
-class AppThemeData extends Object {}
+class AppThemeData extends Object {
+  final primaryWhite = Colors.white;
+  final primaryBlue = Colors.blue;
+}

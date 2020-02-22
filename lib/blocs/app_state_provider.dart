@@ -1,4 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:iremember/blocs/article_bloc.dart';
+import 'package:iremember/services/firebase_storage_service.dart';
+import 'package:iremember/services/firestore_service.dart';
 
 class AppStateProvider extends InheritedWidget {
   final AppState state;
@@ -16,4 +19,10 @@ class AppStateProvider extends InheritedWidget {
       context.dependOnInheritedWidgetOfExactType<AppStateProvider>()?.state;
 }
 
-class AppState extends Object {}
+class AppState extends Object {
+  final ArticleBloc articleBloc;
+
+  AppState() :
+    articleBloc = ArticleBloc(FireStoreService(), FirebaseStorageService());
+  
+}
